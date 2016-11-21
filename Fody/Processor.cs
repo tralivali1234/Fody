@@ -69,9 +69,9 @@ public partial class Processor
         {
             if (!CheckForWeaversXmlChanged())
             {
-                
+
                 FindWeavers();
-        
+
                 if (WeaversHistory.HasChanged(Weavers.Select(x => x.AssemblyPath)))
                 {
                     Logger.LogError("A re-build is required because a weaver has changed.");
@@ -86,7 +86,7 @@ public partial class Processor
 
         if (Weavers.Count == 0)
         {
-            Logger.LogError("No configured weavers. It is possible you have not installed a weaver or have installed a fody weaver nuget into a project type that does not support install.ps1. You may need to add that weaver to FodyWeavers.xml manually. eg. <Weavers><WeaverName/></Weavers>. see https://github.com/Fody/Fody/wiki/SampleUsage");
+            Logger.LogWarning("No configured weavers. It is possible you have not installed a weaver or have installed a fody weaver nuget into a project type that does not support install.ps1. You may need to add that weaver to FodyWeavers.xml manually. eg. <Weavers><WeaverName/></Weavers>. see https://github.com/Fody/Fody/wiki/SampleUsage");
             return;
         }
         lock (locker)
@@ -105,7 +105,7 @@ public partial class Processor
         ReadProjectWeavers();
         addinFinder = new AddinFinder
             {
-                Logger = Logger, 
+                Logger = Logger,
                 SolutionDirectoryPath = SolutionDirectory,
                 NuGetPackageRoot = NuGetPackageRoot
             };
