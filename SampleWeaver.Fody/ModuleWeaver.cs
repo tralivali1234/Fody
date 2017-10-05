@@ -40,9 +40,14 @@ public class ModuleWeaver
     // Will contain the full path of the target assembly. OPTIONAL
     public string AssemblyFilePath { get; set; }
 
-    // Will contain the full directory path of the target project. 
+    // Will contain the full directory path of the target project.
     // A copy of $(ProjectDir). OPTIONAL
     public string ProjectDirectoryPath { get; set; }
+
+    // Will contain the full directory path of the XML documentation file, 
+    // if generating the documentation file is enabled in the project.
+    // A copy of @(DocFileItem->'%(FullPath)'). OPTIONAL
+    public string DocumentationFilePath { get; set; }
 
     // Will contain the full directory path of the current weaver. OPTIONAL
     public string AddinDirectoryPath { get; set; }
@@ -51,16 +56,16 @@ public class ModuleWeaver
     // A copy of `$(SolutionDir)` or, if it does not exist, a copy of `$(MSBuildProjectDirectory)..\..\..\`. OPTIONAL
     public string SolutionDirectoryPath { get; set; }
 
-    // Will contain a semicomma delimetered string that contains 
-    // all the references for the target project. 
+    // Will contain a semicolon delimited string that contains
+    // all the references for the target project.
     // A copy of the contents of the @(ReferencePath). OPTIONAL
     public string References { get; set; }
 
-    // Will a list of all the references marked as copy-local. 
+    // Will contain a list of all the references marked as copy-local.
     // A copy of the contents of the @(ReferenceCopyLocalPaths). OPTIONAL
     public List<string> ReferenceCopyLocalPaths { get; set; }
 
-    // Will a list of all the msbuild constants. 
+    // Will contain a list of all the msbuild constants.
     // A copy of the contents of the $(DefineConstants). OPTIONAL
     public List<string> DefineConstants { get; set; }
 
@@ -73,7 +78,7 @@ public class ModuleWeaver
         LogWarningPoint = (m,p) => { };
         LogError = m => { };
         LogErrorPoint = (m, p) => { };
-    } 
+    }
 
     public void Execute()
     {

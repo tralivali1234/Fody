@@ -4,6 +4,7 @@ using Microsoft.Build.Utilities;
 
 namespace Fody
 {
+    using System;
 
     public class WeavingTask : Task, ICancelableTask
     {
@@ -21,6 +22,8 @@ namespace Fody
         [Required]
         public string ProjectDirectory { get; set; }
 
+        public string DocumentationFilePath { get; set; }
+
         [Required]
         public string References { get; set; }
 
@@ -32,10 +35,18 @@ namespace Fody
 
         public string DefineConstants { get; set; }
 
+        public string Configuration { get; set; }
+
         [Output]
         public string ExecutedWeavers { get; private set; }
 
         public string NuGetPackageRoot { get; set; }
+
+        public string[] PackageDefinitions { get; set; }
+
+        //TODO move back to DebugSymbols when it resolves to true in release mode
+        public bool DebugSymbols { get; set; }
+        public string DebugType { get; set; }
 
         public override bool Execute()
         {
@@ -52,11 +63,14 @@ namespace Fody
                 KeyFilePath = KeyFilePath,
                 SignAssembly = SignAssembly,
                 ProjectDirectory = ProjectDirectory,
+                DocumentationFilePath = DocumentationFilePath,
                 References = References,
                 SolutionDirectory = SolutionDir,
                 ReferenceCopyLocalPaths = referenceCopyLocalPaths,
                 DefineConstants = defineConstants,
-                NuGetPackageRoot = NuGetPackageRoot
+                NuGetPackageRoot = NuGetPackageRoot,
+                PackageDefinitions = PackageDefinitions?.ToList(),
+                DebugSymbols = DebugSymbolsProduced()
             };
             var success = processor.Execute();
             if (success)
@@ -66,6 +80,13 @@ namespace Fody
             }
 
             return success;
+        }
+
+        bool DebugSymbolsProduced()
+        {
+            return
+                !string.Equals(DebugType, "none", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(DebugType, "embedded", StringComparison.OrdinalIgnoreCase);
         }
 
         public void Cancel()

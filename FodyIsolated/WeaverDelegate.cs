@@ -18,6 +18,7 @@ public class WeaverDelegate
     public Action<object, List<string>> SetReferenceCopyLocalPaths;
     public Action<object, string> SetSolutionDirectoryPath;
     public Action<object, string> SetProjectDirectoryPath;
+    public Action<object, string> SetDocumentationFilePath;
     public Action<object, Action<string>> SetLogDebug;
     public Action<object, Action<string>> SetLogInfo;
     public Action<object, Action<string, MessageImportance>> SetLogMessage;
@@ -27,5 +28,5 @@ public class WeaverDelegate
     public Action<object, Action<string, SequencePoint>> SetLogWarningPoint;
     public Action<object, List<string>> SetDefineConstants;
 
-	public Func<object> ConstructInstance;
+    public Func<object> ConstructInstance;
 }

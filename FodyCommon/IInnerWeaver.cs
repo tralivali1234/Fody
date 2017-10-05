@@ -14,6 +14,8 @@ public interface IInnerWeaver : IDisposable
     List<string> ReferenceCopyLocalPaths { get; set; }
     List<string> DefineConstants { get; set; }
     string ProjectDirectoryPath { get; set; }
+    string DocumentationFilePath { get; set; }
+    bool DebugSymbols { get; set; }
 
     void Execute();
     void Cancel();

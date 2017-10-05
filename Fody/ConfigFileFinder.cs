@@ -1,18 +1,12 @@
 using System.Collections.Generic;
 using System.IO;
 
-public  class ConfigFileFinder
+public class ConfigFileFinder
 {
-    
+
     public static List<string> FindWeaverConfigs(string solutionDirectoryPath, string projectDirectory, ILogger logger)
     {
         var files = new List<string>();
-        var fodyDirConfigFilePath = Path.Combine(AssemblyLocation.CurrentDirectory, "FodyWeavers.xml");
-        if (File.Exists(fodyDirConfigFilePath))
-        {
-            files.Add(fodyDirConfigFilePath);
-            logger.LogDebug($"Found path to weavers file '{fodyDirConfigFilePath}'.");
-        }
 
         var solutionConfigFilePath = Path.Combine(solutionDirectoryPath, "FodyWeavers.xml");
         if (File.Exists(solutionConfigFilePath))
@@ -21,18 +15,25 @@ public  class ConfigFileFinder
             logger.LogDebug($"Found path to weavers file '{solutionConfigFilePath}'.");
         }
 
-		var projectConfigFilePath = Path.Combine(projectDirectory, "FodyWeavers.xml");
-        if (File.Exists(projectConfigFilePath))
+        var projectConfigFilePath = Path.Combine(projectDirectory, "FodyWeavers.xml");
+        if (!File.Exists(projectConfigFilePath))
+        {
+            logger.LogDebug($@"Could not file a FodyWeavers.xml at the project level ({projectConfigFilePath}). Some project types do not support using NuGet to add content files e.g. netstandard projects. In these cases it is necessary to manually add a FodyWeavers.xml to the project. Example content:
+  <Weavers>
+    <WeaverName/>
+  </Weavers>
+  ");
+        }
+        else
         {
             files.Add(projectConfigFilePath);
             logger.LogDebug($"Found path to weavers file '{projectConfigFilePath}'.");
         }
 
-
         if (files.Count == 0)
         {
-            var pathsSearched = string.Join("', '", fodyDirConfigFilePath, solutionConfigFilePath, projectConfigFilePath);
-            logger.LogDebug($"Could not find path to weavers file. Searched '{pathsSearched}'.");
+            var pathsSearched = string.Join("', '", solutionConfigFilePath, projectConfigFilePath);
+            throw new WeavingException($"Could not find path to weavers file. Searched '{pathsSearched}'.");
         }
         return files;
     }

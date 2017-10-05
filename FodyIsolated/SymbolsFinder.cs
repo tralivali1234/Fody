@@ -14,6 +14,12 @@ public partial class InnerWeaver
 
     void GetSymbolProviders()
     {
+        if (!DebugSymbols)
+        {
+            Logger.LogInfo("DebugSymbols disabled. No symbols file will be processed.");
+            return;
+        }
+
         FindPdb();
 
         FindMdb();
@@ -34,7 +40,7 @@ public partial class InnerWeaver
             return;
         }
 
-        throw new WeavingException("Found no debug symbols.");
+        Logger.LogWarning("No debug symbols found. It is recommended to build with debug symbols enabled.");
     }
 
     void ChooseNewest()
