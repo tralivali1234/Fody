@@ -1,14 +1,13 @@
 using System;
+using Fody;
 using Microsoft.Build.Framework;
 
-public class BuildLogger : MarshalByRefObject, ILogger
+public class BuildLogger :
+    MarshalByRefObject, 
+    ILogger
 {
-    public IBuildEngine BuildEngine { get; set; }
-    public bool ErrorOccurred;
-    string currentWeaverName;
-
-    MessageImportance DebugMessageImportant = MessageImportance.Normal;
-    MessageImportance InfoMessageImportant = MessageImportance.High;
+    public IBuildEngine BuildEngine { get; set; } = null!;
+    string? currentWeaverName;
 
     public virtual void SetCurrentWeaverName(string weaverName)
     {
@@ -20,29 +19,29 @@ public class BuildLogger : MarshalByRefObject, ILogger
         currentWeaverName = null;
     }
 
-    public virtual void LogMessage(string message, MessageImportance level)
+    public virtual void LogMessage(string message, int level)
     {
         BuildEngine.LogMessageEvent(new BuildMessageEventArgs(GetIndent() + PrependMessage(message), "", "Fody", (Microsoft.Build.Framework.MessageImportance)level));
     }
 
     public virtual void LogDebug(string message)
     {
-        BuildEngine.LogMessageEvent(new BuildMessageEventArgs(GetIndent() + PrependMessage(message), "", "Fody", (Microsoft.Build.Framework.MessageImportance) DebugMessageImportant));
+        BuildEngine.LogMessageEvent(new BuildMessageEventArgs(GetIndent() + PrependMessage(message), "", "Fody", (Microsoft.Build.Framework.MessageImportance)MessageImportanceDefaults.Debug));
     }
 
     public virtual void LogInfo(string message)
     {
-        BuildEngine.LogMessageEvent(new BuildMessageEventArgs(GetIndent() + PrependMessage(message), "", "Fody", (Microsoft.Build.Framework.MessageImportance)InfoMessageImportant));
+        BuildEngine.LogMessageEvent(new BuildMessageEventArgs(GetIndent() + PrependMessage(message), "", "Fody", (Microsoft.Build.Framework.MessageImportance)MessageImportanceDefaults.Info));
     }
 
-    public virtual void LogWarning(string message)
+    public virtual void LogWarning(string message, string? code)
     {
-        LogWarning(message, null, 0, 0, 0, 0);
+        LogWarning(message, null, 0, 0, 0, 0, code);
     }
 
-    public virtual void LogWarning(string message, string file, int lineNumber, int columnNumber, int endLineNumber, int endColumnNumber)
+    public virtual void LogWarning(string message, string? file, int lineNumber, int columnNumber, int endLineNumber, int endColumnNumber, string? code)
     {
-        BuildEngine.LogWarningEvent(new BuildWarningEventArgs("", "", file, lineNumber, columnNumber, endLineNumber, endColumnNumber, PrependMessage(message), "", "Fody"));
+        BuildEngine.LogWarningEvent(new BuildWarningEventArgs("", code ?? "", file, lineNumber, columnNumber, endLineNumber, endColumnNumber, PrependMessage(message), "", "Fody"));
     }
 
     public virtual void LogError(string message)
@@ -50,7 +49,9 @@ public class BuildLogger : MarshalByRefObject, ILogger
         LogError(message, null, 0, 0, 0, 0);
     }
 
-    public virtual void LogError(string message, string file, int lineNumber, int columnNumber, int endLineNumber, int endColumnNumber)
+    public bool ErrorOccurred { get; private set; }
+
+    public virtual void LogError(string message, string? file, int lineNumber, int columnNumber, int endLineNumber, int endColumnNumber)
     {
         ErrorOccurred = true;
         BuildEngine.LogErrorEvent(new BuildErrorEventArgs("", "", file, lineNumber, columnNumber, endLineNumber, endColumnNumber, PrependMessage(message), "", "Fody"));

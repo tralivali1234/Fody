@@ -1,29 +1,19 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
-public partial class InnerWeaver 
+public partial class InnerWeaver
 {
-    public Dictionary<string, string> ReferenceDictionary = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
-    public List<string> SplitReferences;
+    public List<string> SplitReferences = null!;
 
     public virtual void SplitUpReferences()
     {
         SplitReferences = References
             .Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries)
             .ToList();
-        SetRefDictionary(SplitReferences);
-        Logger.LogDebug("Reference count=" + ReferenceDictionary.Count);
+        Logger.LogDebug("Reference count=" + SplitReferences.Count);
+
+        var joinedReferences = string.Join(Environment.NewLine + "\t\t", SplitReferences.OrderBy(x => x));
+        Logger.LogDebug($"References:{Environment.NewLine}{joinedReferences}");
     }
-
-
-    void SetRefDictionary(IEnumerable<string> filePaths)
-    {
-        foreach (var filePath in filePaths)
-        {
-            ReferenceDictionary[Path.GetFileNameWithoutExtension(filePath)] = filePath;
-        }
-    }
-
 }

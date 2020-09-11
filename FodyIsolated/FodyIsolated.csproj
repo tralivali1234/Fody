@@ -1,34 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net452</TargetFramework>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <SignAssembly>true</SignAssembly>
+    <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
     <AssemblyOriginatorKeyFile>$(SolutionDir)Key.snk</AssemblyOriginatorKeyFile>
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Mono.Cecil">
-      <HintPath>..\Lib\Cecil\net40\Mono.Cecil.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil.Mdb">
-      <HintPath>..\Lib\Cecil\net40\Mono.Cecil.Mdb.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil.Pdb">
-      <HintPath>..\Lib\Cecil\net40\Mono.Cecil.Pdb.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil.Rocks">
-      <HintPath>..\Lib\Cecil\net40\Mono.Cecil.Rocks.dll</HintPath>
-    </Reference>
-    <Compile Include="..\CommonAssemblyInfo.cs" />
-    <ProjectReference Include="..\FodyCommon\FodyCommon.csproj"/>
+  <ItemGroup Condition="$(TargetFramework) == 'net472'">
+    <Reference Include="Mono.Cecil" HintPath="..\Lib\Cecil\net40\Mono.Cecil.dll" />
+    <Reference Include="Mono.Cecil.Pdb" HintPath="..\Lib\Cecil\net40\Mono.Cecil.Pdb.dll" />
+    <Reference Include="Mono.Cecil.Rocks" HintPath="..\Lib\Cecil\net40\Mono.Cecil.Rocks.dll" />
   </ItemGroup>
-  <Target Name="CopyForIntegration" AfterTargets="AfterBuild">
-    <MakeDir Directories="$(SolutionDir)ForIntegration" />
-    <Copy SourceFiles="$(TargetDir)FodyIsolated.dll" DestinationFolder="$(SolutionDir)ForIntegration" />
-    <Copy SourceFiles="$(TargetDir)FodyIsolated.pdb" DestinationFolder="$(SolutionDir)ForIntegration" Condition="Exists('$(TargetDir)FodyIsolated.pdb')" />
-    <Copy SourceFiles="$(TargetDir)Mono.Cecil.dll" DestinationFolder="$(SolutionDir)ForIntegration" />
-    <Copy SourceFiles="$(TargetDir)Mono.Cecil.Mdb.dll" DestinationFolder="$(SolutionDir)ForIntegration" />
-    <Copy SourceFiles="$(TargetDir)Mono.Cecil.Pdb.dll" DestinationFolder="$(SolutionDir)ForIntegration" />
-    <Copy SourceFiles="$(TargetDir)Mono.Cecil.Rocks.dll" DestinationFolder="$(SolutionDir)ForIntegration" />
-  </Target>
+  <ItemGroup Condition="$(TargetFramework) == 'netstandard2.0'">
+    <Reference Include="Mono.Cecil" HintPath="..\Lib\Cecil\netstandard2.0\Mono.Cecil.dll" />
+    <Reference Include="Mono.Cecil.Pdb" HintPath="..\Lib\Cecil\netstandard2.0\Mono.Cecil.Pdb.dll" />
+    <Reference Include="Mono.Cecil.Rocks" HintPath="..\Lib\Cecil\netstandard2.0\Mono.Cecil.Rocks.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FodyCommon\FodyCommon.csproj" />
+    <ProjectReference Include="..\FodyHelpers\FodyHelpers.csproj" />
+    <PackageReference Include="Nullable" Version="1.2.1" PrivateAssets="All" />
+    <PackageReference Condition="$(Configuration)=='Release'" Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
 </Project>

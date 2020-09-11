@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild Condition="$(Configuration)=='Release'">true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile Condition="$(Configuration)=='Release'">true</GenerateDocumentationFile>
+    <Description>Helpers for Fody.</Description>
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Nullable" Version="1.2.1" PrivateAssets="All" />
+    <Reference Include="Mono.Cecil" HintPath="..\Lib\Cecil\netstandard2.0\Mono.Cecil.dll" />
+    <Reference Include="Mono.Cecil.Pdb" HintPath="..\Lib\Cecil\netstandard2.0\Mono.Cecil.Pdb.dll" />
+    <Reference Include="Mono.Cecil.Rocks" HintPath="..\Lib\Cecil\netstandard2.0\Mono.Cecil.Rocks.dll" />
+    <PackageReference Condition="$(Configuration)=='Release'" Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+    <Content Include="build\*" PackagePath="build" />
+  </ItemGroup>
+</Project>

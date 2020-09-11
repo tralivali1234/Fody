@@ -1,24 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net452</TargetFramework>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
   </PropertyGroup>
+
+  <Import Project="..\FodyHelpers\build\FodyHelpers.props" />
+
   <ItemGroup>
-    <Reference Include="Microsoft.Build.Framework" />
-    <Reference Include="Mono.Cecil">
-      <HintPath>..\Lib\Cecil\net40\Mono.Cecil.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil.Mdb">
-      <HintPath>..\Lib\Cecil\net40\Mono.Cecil.Mdb.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil.Pdb">
-      <HintPath>..\Lib\Cecil\net40\Mono.Cecil.Pdb.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil.Rocks">
-      <HintPath>..\Lib\Cecil\net40\Mono.Cecil.Rocks.dll</HintPath>
-    </Reference>
+    <PackageReference Include="Nullable" Version="1.2.1" PrivateAssets="All" />
+    <Reference Include="Mono.Cecil" HintPath="..\Lib\Cecil\netstandard2.0\Mono.Cecil.dll" />
+    <Reference Include="Mono.Cecil.Pdb" HintPath="..\Lib\Cecil\netstandard2.0\Mono.Cecil.Pdb.dll" />
+    <Reference Include="Mono.Cecil.Rocks" HintPath="..\Lib\Cecil\netstandard2.0\Mono.Cecil.Rocks.dll" />
+    <ProjectReference Include="..\FodyHelpers\FodyHelpers.csproj" />
   </ItemGroup>
+
   <Target Name="CopyForIntegration" AfterTargets="AfterBuild">
-     <Copy SourceFiles="$(TargetPath)" DestinationFiles="$(SolutionDir)Fody.Tests\Packages\SampleWeaver.Fody.1.0.0.0\SampleWeaver.Fody.dll" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFiles="..\Tests\Fody\Packages\SampleWeaver.Fody.1.0.0.0\SampleWeaver.Fody.dll" />
   </Target>
+
+  <Import Project="..\FodyHelpers\build\FodyHelpers.targets" />
+
 </Project>
